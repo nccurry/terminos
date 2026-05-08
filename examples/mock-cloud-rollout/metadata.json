@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "tool_version": "0.1.0-dev",
+  "updated_at": "2026-05-08T19:25:36Z",
+  "host": {
+    "os": "linux",
+    "arch": "amd64",
+    "go": "go1.25.6"
+  }
+}

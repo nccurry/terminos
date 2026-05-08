@@ -1,0 +1,27 @@
+schema_version: "1.0"
+name: imported-transcript
+summary: A demo bundle imported from examples/transcript.txt.
+defaults:
+  shell: bash
+  cwd: .
+  prompt: "$ "
+  timeout: 30s
+  terminal:
+    cols: 120
+    rows: 32
+playback:
+  step_mode: enter
+  type_delay: 18ms
+  max_delay: 2s
+redactions:
+  - pattern: "/home/[^ ]+"
+    replacement: "~"
+steps:
+  - id: echo-hello
+    title: Run echo hello
+    command: echo hello
+    expect_exit: 0
+  - id: printf-two-steps-n
+    title: Run printf 'two steps\n'
+    command: printf 'two steps\n'
+    expect_exit: 0

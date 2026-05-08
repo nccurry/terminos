@@ -1,0 +1,3 @@
+{"type":"start","time_ms":0,"step_id":"pipeline-summary","command":"printf 'Pipeline summary\\n'\nfor i in $(seq -w 1 9); do printf '  checkpoint-%s complete\\n' \"$i\"; done\n","cwd":"examples/mock-data-pipeline","shell":"bash"}
+{"type":"stdout","time_ms":3,"step_id":"pipeline-summary","data":"Pipeline summary\n  checkpoint-1 complete\n  checkpoint-2 complete\n  checkpoint-3 complete\n  checkpoint-4 complete\n  checkpoint-5 complete\n  checkpoint-6 complete\n  checkpoint-7 complete\n  checkpoint-8 complete\n  checkpoint-9 complete\n"}
+{"type":"exit","time_ms":3,"step_id":"pipeline-summary","exit_code":0}

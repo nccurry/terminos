@@ -1,0 +1,5 @@
+$ echo hello
+hello
+
+$ printf 'two steps\n'
+two steps

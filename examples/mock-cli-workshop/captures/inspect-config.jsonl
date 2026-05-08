@@ -1,0 +1,3 @@
+{"type":"start","time_ms":0,"step_id":"inspect-config","command":"printf 'Configuration\\n'\nfor i in $(seq -w 1 9); do printf '  setting-%s = enabled\\n' \"$i\"; done\n","cwd":"examples/mock-cli-workshop","shell":"bash"}
+{"type":"stdout","time_ms":2,"step_id":"inspect-config","data":"Configuration\n  setting-1 = enabled\n  setting-2 = enabled\n  setting-3 = enabled\n  setting-4 = enabled\n  setting-5 = enabled\n  setting-6 = enabled\n  setting-7 = enabled\n  setting-8 = enabled\n  setting-9 = enabled\n"}
+{"type":"exit","time_ms":2,"step_id":"inspect-config","exit_code":0}

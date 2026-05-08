@@ -1,0 +1,3 @@
+{"type":"start","time_ms":0,"step_id":"create-workspace","command":"printf 'Workspace setup\\n'\nfor i in $(seq -w 1 8); do printf '  directory-%s created\\n' \"$i\"; done\n","cwd":"examples/mock-cli-workshop","shell":"bash"}
+{"type":"stdout","time_ms":3,"step_id":"create-workspace","data":"Workspace setup\n  directory-1 created\n  directory-2 created\n  directory-3 created\n  directory-4 created\n  directory-5 created\n  directory-6 created\n  directory-7 created\n  directory-8 created\n"}
+{"type":"exit","time_ms":3,"step_id":"create-workspace","exit_code":0}

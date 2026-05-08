@@ -1,0 +1,3 @@
+{"type":"start","time_ms":0,"step_id":"partition-output","command":"printf 'Output partitions\\n'\nfor i in $(seq -w 1 8); do printf '  partition date=2026-05-%s written\\n' \"$i\"; done\n","cwd":"examples/mock-data-pipeline","shell":"bash"}
+{"type":"stdout","time_ms":2,"step_id":"partition-output","data":"Output partitions\n  partition date=2026-05-1 written\n  partition date=2026-05-2 written\n  partition date=2026-05-3 written\n  partition date=2026-05-4 written\n  partition date=2026-05-5 written\n  partition date=2026-05-6 written\n  partition date=2026-05-7 written\n  partition date=2026-05-8 written\n"}
+{"type":"exit","time_ms":2,"step_id":"partition-output","exit_code":0}

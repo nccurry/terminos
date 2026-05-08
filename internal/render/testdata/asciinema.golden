@@ -1,0 +1,3 @@
+{"env":{"SHELL":"bash"},"height":32,"timestamp":0,"version":2,"width":120}
+[0,"o","$ printf 'hello\\n'\n"]
+[0.001,"o","hello\n"]

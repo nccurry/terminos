@@ -1,0 +1,3 @@
+{"type":"start","time_ms":0,"step_id":"normalize-records","command":"printf 'Normalization\\n'\nfor i in $(seq -w 1 12); do printf '  transform-%s applied\\n' \"$i\"; done\n","cwd":"examples/mock-data-pipeline","shell":"bash"}
+{"type":"stdout","time_ms":3,"step_id":"normalize-records","data":"Normalization\n  transform-01 applied\n  transform-02 applied\n  transform-03 applied\n  transform-04 applied\n  transform-05 applied\n  transform-06 applied\n  transform-07 applied\n  transform-08 applied\n  transform-09 applied\n  transform-10 applied\n  transform-11 applied\n  transform-12 applied\n"}
+{"type":"exit","time_ms":3,"step_id":"normalize-records","exit_code":0}

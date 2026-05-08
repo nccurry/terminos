@@ -1,0 +1,3 @@
+{"type":"start","time_ms":0,"step_id":"run-analytics","command":"printf 'Analytics results\\n'\nfor i in $(seq -w 1 10); do printf '  metric-%s value=%s.%s\\n' \"$i\" \"$i\" \"$i\"; done\n","cwd":"examples/mock-data-pipeline","shell":"bash"}
+{"type":"stdout","time_ms":2,"step_id":"run-analytics","data":"Analytics results\n  metric-01 value=01.01\n  metric-02 value=02.02\n  metric-03 value=03.03\n  metric-04 value=04.04\n  metric-05 value=05.05\n  metric-06 value=06.06\n  metric-07 value=07.07\n  metric-08 value=08.08\n  metric-09 value=09.09\n  metric-10 value=10.10\n"}
+{"type":"exit","time_ms":2,"step_id":"run-analytics","exit_code":0}

@@ -1,0 +1,79 @@
+schema_version: "1.0"
+name: mock-data-pipeline
+summary: A public mock demo showing a ten-step batch data pipeline with multiline output.
+defaults:
+  shell: bash
+  cwd: .
+  prompt: "$ "
+  timeout: 30s
+  terminal:
+    cols: 120
+    rows: 32
+playback:
+  step_mode: enter
+  type_delay: 18ms
+  max_delay: 2s
+redactions:
+  - pattern: "/home/[^ ]+"
+    replacement: "~"
+steps:
+  - id: inspect-source
+    title: Inspect source files
+    command: |
+      printf 'Source inventory\n'
+      for i in $(seq -w 1 9); do printf '  source-%s.csv rows=%s000\n' "$i" "$i"; done
+    expect_exit: 0
+  - id: validate-schema
+    title: Validate schema
+    command: |
+      printf 'Schema validation\n'
+      for i in $(seq -w 1 11); do printf '  field-%s type check passed\n' "$i"; done
+    expect_exit: 0
+  - id: ingest-batches
+    title: Ingest batches
+    command: |
+      printf 'Batch ingest\n'
+      for i in $(seq -w 1 14); do printf '  batch-%s accepted records=%s50\n' "$i" "$i"; done
+    expect_exit: 0
+  - id: normalize-records
+    title: Normalize records
+    command: |
+      printf 'Normalization\n'
+      for i in $(seq -w 1 12); do printf '  transform-%s applied\n' "$i"; done
+    expect_exit: 0
+  - id: quality-rules
+    title: Run quality rules
+    command: |
+      printf 'Quality rules\n'
+      for i in $(seq -w 1 13); do printf '  rule-%s passed rejects=0\n' "$i"; done
+    expect_exit: 0
+  - id: partition-output
+    title: Partition output
+    command: |
+      printf 'Output partitions\n'
+      for i in $(seq -w 1 8); do printf '  partition date=2026-05-%s written\n' "$i"; done
+    expect_exit: 0
+  - id: build-indexes
+    title: Build indexes
+    command: |
+      printf 'Index build\n'
+      for i in $(seq -w 1 10); do printf '  index-%s ready\n' "$i"; done
+    expect_exit: 0
+  - id: run-analytics
+    title: Run analytics
+    command: |
+      printf 'Analytics results\n'
+      for i in $(seq -w 1 10); do printf '  metric-%s value=%s.%s\n' "$i" "$i" "$i"; done
+    expect_exit: 0
+  - id: export-reports
+    title: Export reports
+    command: |
+      printf 'Report export\n'
+      for i in $(seq -w 1 8); do printf '  report-%s.md generated\n' "$i"; done
+    expect_exit: 0
+  - id: pipeline-summary
+    title: Summarize pipeline
+    command: |
+      printf 'Pipeline summary\n'
+      for i in $(seq -w 1 9); do printf '  checkpoint-%s complete\n' "$i"; done
+    expect_exit: 0

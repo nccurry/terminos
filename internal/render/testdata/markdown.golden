@@ -1,0 +1,11 @@
+# render-test
+
+A render test.
+
+## Say hello
+
+```console
+$ printf 'hello\n'
+hello
+```
+

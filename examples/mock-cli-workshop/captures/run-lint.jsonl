@@ -1,0 +1,3 @@
+{"type":"start","time_ms":0,"step_id":"run-lint","command":"printf 'Lint pass\\n'\nfor i in $(seq -w 1 8); do printf '  check-%s clean\\n' \"$i\"; done\n","cwd":"examples/mock-cli-workshop","shell":"bash"}
+{"type":"stdout","time_ms":2,"step_id":"run-lint","data":"Lint pass\n  check-1 clean\n  check-2 clean\n  check-3 clean\n  check-4 clean\n  check-5 clean\n  check-6 clean\n  check-7 clean\n  check-8 clean\n"}
+{"type":"exit","time_ms":2,"step_id":"run-lint","exit_code":0}

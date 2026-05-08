@@ -1,0 +1,16 @@
+{
+  "valid": false,
+  "bundle_path": "<bundle>",
+  "manifest_path": "<manifest>",
+  "schema_version": "1.0",
+  "step_count": 0,
+  "errors": [
+    {
+      "severity": "error",
+      "code": "steps_required",
+      "path": "steps",
+      "message": "at least one step is required"
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,31 @@
+schema_version: "1.0"
+name: multi-step
+summary: A tiny multi-step terminal demo.
+defaults:
+  shell: bash
+  cwd: .
+  prompt: "$ "
+  timeout: 30s
+  terminal:
+    cols: 120
+    rows: 32
+playback:
+  step_mode: enter
+  type_delay: 18ms
+  max_delay: 2s
+redactions:
+  - pattern: "/home/[^ ]+"
+    replacement: "~"
+steps:
+  - id: show-date
+    title: Show a deterministic date
+    command: printf '2026-05-08\n'
+    expect_exit: 0
+  - id: list-files
+    title: List example files
+    command: printf 'demo.yaml\nREADME.md\n'
+    expect_exit: 0
+  - id: expected-failure
+    title: Show an expected failure
+    command: printf 'expected failure\n'; exit 2
+    expect_exit: 2

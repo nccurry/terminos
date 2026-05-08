@@ -1,0 +1,3 @@
+{"type":"start","time_ms":0,"step_id":"list-artifacts","command":"printf 'Artifacts\\n'\nfor i in $(seq -w 1 8); do printf '  artifact-%s available\\n' \"$i\"; done\n","cwd":"examples/mock-cli-workshop","shell":"bash"}
+{"type":"stdout","time_ms":2,"step_id":"list-artifacts","data":"Artifacts\n  artifact-1 available\n  artifact-2 available\n  artifact-3 available\n  artifact-4 available\n  artifact-5 available\n  artifact-6 available\n  artifact-7 available\n  artifact-8 available\n"}
+{"type":"exit","time_ms":2,"step_id":"list-artifacts","exit_code":0}

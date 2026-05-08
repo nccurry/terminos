@@ -1,0 +1,23 @@
+schema_version: "1.0"
+name: hello
+summary: A tiny public example demo.
+defaults:
+  shell: bash
+  cwd: .
+  prompt: "$ "
+  timeout: 30s
+  terminal:
+    cols: 120
+    rows: 32
+playback:
+  step_mode: enter
+  type_delay: 18ms
+  max_delay: 2s
+redactions:
+  - pattern: "/home/[^ ]+"
+    replacement: "~"
+steps:
+  - id: hello
+    title: Print a friendly message
+    command: printf 'hello from terminos\n'
+    expect_exit: 0

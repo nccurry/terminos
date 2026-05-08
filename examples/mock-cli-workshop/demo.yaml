@@ -1,0 +1,79 @@
+schema_version: "1.0"
+name: mock-cli-workshop
+summary: A public mock demo showing a ten-step terminal workshop with multiline output.
+defaults:
+  shell: bash
+  cwd: .
+  prompt: "$ "
+  timeout: 30s
+  terminal:
+    cols: 120
+    rows: 32
+playback:
+  step_mode: enter
+  type_delay: 18ms
+  max_delay: 2s
+redactions:
+  - pattern: "/home/[^ ]+"
+    replacement: "~"
+steps:
+  - id: create-workspace
+    title: Create workspace
+    command: |
+      printf 'Workspace setup\n'
+      for i in $(seq -w 1 8); do printf '  directory-%s created\n' "$i"; done
+    expect_exit: 0
+  - id: inspect-config
+    title: Inspect config
+    command: |
+      printf 'Configuration\n'
+      for i in $(seq -w 1 9); do printf '  setting-%s = enabled\n' "$i"; done
+    expect_exit: 0
+  - id: generate-fixtures
+    title: Generate fixtures
+    command: |
+      printf 'Fixture generation\n'
+      for i in $(seq -w 1 11); do printf '  fixture-%s.json written\n' "$i"; done
+    expect_exit: 0
+  - id: run-fast-tests
+    title: Run fast tests
+    command: |
+      printf 'Fast test run\n'
+      for i in $(seq -w 1 12); do printf '  test-%s PASS\n' "$i"; done
+    expect_exit: 0
+  - id: run-lint
+    title: Run lint
+    command: |
+      printf 'Lint pass\n'
+      for i in $(seq -w 1 8); do printf '  check-%s clean\n' "$i"; done
+    expect_exit: 0
+  - id: render-preview
+    title: Render preview
+    command: |
+      printf 'Preview render\n'
+      for i in $(seq -w 1 10); do printf '  frame-%s rendered\n' "$i"; done
+    expect_exit: 0
+  - id: list-artifacts
+    title: List artifacts
+    command: |
+      printf 'Artifacts\n'
+      for i in $(seq -w 1 8); do printf '  artifact-%s available\n' "$i"; done
+    expect_exit: 0
+  - id: validate-bundle
+    title: Validate bundle
+    command: |
+      printf 'Bundle validation\n'
+      for i in $(seq -w 1 10); do printf '  validation-%s ok\n' "$i"; done
+    expect_exit: 0
+  - id: play-dry-run
+    title: Play dry run
+    command: |
+      printf 'Playback dry run\n'
+      for i in $(seq -w 1 9); do printf '  segment-%s ready\n' "$i"; done
+    expect_exit: 0
+  - id: final-check
+    title: Final check
+    command: |
+      printf 'Workshop summary\n'
+      for i in $(seq -w 1 7); do printf '  result-%s documented\n' "$i"; done
+    expect_exit: 0

@@ -1,0 +1,23 @@
+schema_version: "1.0"
+name: expected-failure
+summary: A demo with an expected non-zero command exit.
+defaults:
+  shell: bash
+  cwd: .
+  prompt: "$ "
+  timeout: 30s
+  terminal:
+    cols: 120
+    rows: 32
+playback:
+  step_mode: enter
+  type_delay: 18ms
+  max_delay: 2s
+redactions:
+  - pattern: "/home/[^ ]+"
+    replacement: "~"
+steps:
+  - id: expected-failure
+    title: Show an expected failure
+    command: printf 'expected failure\n'; exit 2
+    expect_exit: 2

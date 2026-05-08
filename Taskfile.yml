@@ -1,0 +1,261 @@
+version: '3'
+
+silent: true
+
+vars:
+  BINARY: terminos
+  DIST_DIR: dist
+  GOLANGCI_LINT_VERSION: 2.11.4
+  GOIMPORTS_VERSION: 0.43.0
+  TASK_VERSION: 3.48.0
+  VERSION: '{{.VERSION | default "0.1.0-dev"}}'
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  # ===========================================================================
+  # SETUP
+  # ===========================================================================
+  setup:
+    desc: Install/check tools and prepare the project
+    cmds:
+      - task: deps:install
+      - task: deps:go
+      - echo ""
+      - echo "=== Setup Complete ==="
+      - 'echo "Run: task ci"'
+
+  deps:install:
+    desc: Install/update local developer tools
+    cmds:
+      - task: deps:goimports:install
+      - task: deps:golangci-lint:install
+
+  deps:check:
+    desc: Check required tools are available
+    cmds:
+      - |
+        for tool in go task goimports golangci-lint; do
+          if ! command -v "$tool" >/dev/null 2>&1; then
+            echo "ERROR: $tool is not installed. Run: task setup"
+            exit 1
+          fi
+        done
+        echo "Go: $(go version)"
+        echo "Task: $(task --version)"
+        echo "goimports: installed"
+        echo "golangci-lint: $(golangci-lint --version | head -1)"
+
+  deps:goimports:install:
+    desc: Install goimports
+    cmds:
+      - go install golang.org/x/tools/cmd/goimports@v{{.GOIMPORTS_VERSION}}
+      - 'echo "goimports: v{{.GOIMPORTS_VERSION}}"'
+
+  deps:golangci-lint:install:
+    desc: Install golangci-lint
+    cmds:
+      - go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v{{.GOLANGCI_LINT_VERSION}}
+      - 'echo "golangci-lint: v{{.GOLANGCI_LINT_VERSION}}"'
+
+  deps:go:
+    desc: Tidy Go modules
+    cmds:
+      - go mod tidy
+
+  # ===========================================================================
+  # BUILD
+  # ===========================================================================
+  build:
+    desc: Build the CLI binary
+    cmds:
+      - mkdir -p {{.DIST_DIR}}
+      - go build -trimpath -ldflags "-s -w -X github.com/nccurry/terminos/internal/model.ToolVersion={{.VERSION}}" -o {{.DIST_DIR}}/{{.BINARY}} ./cmd/terminos
+      - echo "Built {{.DIST_DIR}}/{{.BINARY}} ({{.VERSION}})"
+
+  cli:
+    desc: Run the CLI (pass args after --)
+    cmds:
+      - go run ./cmd/terminos -- {{.CLI_ARGS}}
+
+  # ===========================================================================
+  # TEST
+  # ===========================================================================
+  test:
+    desc: Run all tests
+    cmds:
+      - task: test:unit
+      - task: test:e2e
+
+  test:unit:
+    desc: Run unit tests
+    cmds:
+      - go test ./...
+
+  test:e2e:
+    desc: Run a smoke test through the compiled binary
+    cmds:
+      - task: build
+      - |
+        tmpdir=$(mktemp -d)
+        trap 'rm -rf "$tmpdir"' EXIT
+        ./{{.DIST_DIR}}/{{.BINARY}} init "$tmpdir/hello" --output json >/dev/null
+        test -f "$tmpdir/hello/metadata.json"
+        ./{{.DIST_DIR}}/{{.BINARY}} capture "$tmpdir/hello" --output json | grep -q '"step_id": "hello"'
+        ./{{.DIST_DIR}}/{{.BINARY}} validate "$tmpdir/hello" --output json | grep -q '"valid": true'
+        ./{{.DIST_DIR}}/{{.BINARY}} validate "$tmpdir/hello" --captures --output json | grep -q '"valid": true'
+        ./{{.DIST_DIR}}/{{.BINARY}} list-steps "$tmpdir/hello" --output json | grep -q '"id": "hello"'
+        ./{{.DIST_DIR}}/{{.BINARY}} play "$tmpdir/hello" --step-mode none --type-delay 0s | grep -q 'hello from terminos'
+        ./{{.DIST_DIR}}/{{.BINARY}} render "$tmpdir/hello" --format markdown | grep -q 'hello from terminos'
+        ./{{.DIST_DIR}}/{{.BINARY}} validate examples/hello --captures --output json | grep -q '"valid": true'
+        ./{{.DIST_DIR}}/{{.BINARY}} validate examples/multi-step --captures --output json | grep -q '"valid": true'
+        for demo in examples/mock-cloud-rollout examples/mock-data-pipeline examples/mock-cli-workshop; do
+          ./{{.DIST_DIR}}/{{.BINARY}} validate "$demo" --captures --output json | grep -q '"valid": true'
+        done
+        ./{{.DIST_DIR}}/{{.BINARY}} play examples/imported-transcript --step-mode none --type-delay 0s | grep -q 'two steps'
+        ./{{.DIST_DIR}}/{{.BINARY}} play examples/mock-cloud-rollout --step-mode none --type-delay 0s --max-delay 0s | grep -q 'Production promotion'
+        echo "E2E smoke test passed"
+
+  test:coverage:
+    desc: Run tests with optional line coverage threshold
+    vars:
+      COVERAGE_THRESHOLD: '{{.COVERAGE_THRESHOLD | default "0"}}'
+    cmds:
+      - go test -covermode=atomic -coverprofile=coverage.out ./...
+      - |
+        total=$(go tool cover -func=coverage.out | awk '/^total:/ {gsub(/%/, "", $3); print $3}')
+        echo "Total coverage: ${total}%"
+        awk -v total="$total" -v threshold="{{.COVERAGE_THRESHOLD}}" 'BEGIN {
+          if (total + 0 < threshold + 0) {
+            printf("coverage %.1f%% is below threshold %.1f%%\n", total, threshold)
+            exit 1
+          }
+        }'
+
+  # ===========================================================================
+  # LINT & FORMAT
+  # ===========================================================================
+  fmt:
+    desc: Format all code
+    cmds:
+      - goimports -w -local github.com/nccurry/terminos .
+      - gofmt -s -w .
+
+  lint:
+    desc: Run formatting checks and linters
+    cmds:
+      - task: lint:fmt
+      - task: lint:go
+
+  lint:fmt:
+    desc: Check Go formatting
+    cmds:
+      - |
+        files=$(gofmt -l .)
+        imports=$(goimports -l -local github.com/nccurry/terminos .)
+        if [ -n "$files$imports" ]; then
+          echo "The following files need formatting:"
+          printf '%s\n' "$files" "$imports" | sed '/^$/d' | sort -u
+          echo "Run: task fmt"
+          exit 1
+        fi
+
+  lint:go:
+    desc: Run golangci-lint
+    cmds:
+      - golangci-lint run ./...
+
+  # ===========================================================================
+  # RELEASE / DOCS / CLEAN / CI
+  # ===========================================================================
+  release:local:
+    desc: Build local release artifacts and checksums
+    vars:
+      RELEASE_DIR: '{{.DIST_DIR}}/release'
+    cmds:
+      - rm -rf {{.RELEASE_DIR}}
+      - mkdir -p {{.RELEASE_DIR}}
+      - |
+        set -eu
+        version="{{.VERSION}}"
+        for target in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64; do
+          goos=${target%/*}
+          goarch=${target#*/}
+          ext=""
+          if [ "$goos" = "windows" ]; then
+            ext=".exe"
+          fi
+          out="{{.RELEASE_DIR}}/{{.BINARY}}_${version}_${goos}_${goarch}${ext}"
+          echo "Building $out"
+          GOOS="$goos" GOARCH="$goarch" CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X github.com/nccurry/terminos/internal/model.ToolVersion={{.VERSION}}" -o "$out" ./cmd/terminos
+        done
+        cd "{{.RELEASE_DIR}}"
+        for artifact in *; do
+          if [ "$artifact" = "SHA256SUMS" ] || [ ! -f "$artifact" ]; then
+            continue
+          fi
+          if command -v sha256sum >/dev/null 2>&1; then
+            sha256sum "$artifact"
+          else
+            shasum -a 256 "$artifact"
+          fi
+        done > SHA256SUMS
+        echo "Release artifacts in {{.RELEASE_DIR}}"
+
+  release:check:
+    desc: Verify local release artifacts
+    vars:
+      RELEASE_DIR: '{{.DIST_DIR}}/release'
+      LINUX_AMD64: '{{.RELEASE_DIR}}/{{.BINARY}}_{{.VERSION}}_linux_amd64'
+    cmds:
+      - |
+        set -eu
+        test -x "{{.LINUX_AMD64}}"
+        version_output=$("{{.LINUX_AMD64}}" --version)
+        expected="{{.BINARY}} version {{.VERSION}}"
+        if [ "$version_output" != "$expected" ]; then
+          echo "expected version output '$expected', got '$version_output'"
+          exit 1
+        fi
+        if grep -q 'SHA256SUMS' "{{.RELEASE_DIR}}/SHA256SUMS"; then
+          echo "SHA256SUMS must not include itself"
+          exit 1
+        fi
+        cd "{{.RELEASE_DIR}}"
+        if command -v sha256sum >/dev/null 2>&1; then
+          sha256sum -c SHA256SUMS
+        else
+          shasum -a 256 -c SHA256SUMS
+        fi
+
+  docs:check:
+    desc: Check documentation files exist
+    cmds:
+      - test -f README.md
+      - test -f docs/getting-started.md
+      - test -f docs/reference/cli.md
+      - test -f docs/reference/manifest.md
+      - test -f docs/reference/release.md
+
+  clean:
+    desc: Remove build and test artifacts
+    cmds:
+      - rm -rf {{.DIST_DIR}} coverage.out
+
+  ci:
+    desc: Run the local CI contract
+    cmds:
+      - task: deps:check
+      - task: lint
+      - task: test
+      - task: test:coverage
+      - task: docs:check
+      - task: release:local
+        vars:
+          VERSION: 0.0.0-ci
+      - task: release:check
+        vars:
+          VERSION: 0.0.0-ci

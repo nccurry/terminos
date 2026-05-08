@@ -1,0 +1,3 @@
+{"type":"start","time_ms":0,"step_id":"build-indexes","command":"printf 'Index build\\n'\nfor i in $(seq -w 1 10); do printf '  index-%s ready\\n' \"$i\"; done\n","cwd":"examples/mock-data-pipeline","shell":"bash"}
+{"type":"stdout","time_ms":3,"step_id":"build-indexes","data":"Index build\n  index-01 ready\n  index-02 ready\n  index-03 ready\n  index-04 ready\n  index-05 ready\n  index-06 ready\n  index-07 ready\n  index-08 ready\n  index-09 ready\n  index-10 ready\n"}
+{"type":"exit","time_ms":3,"step_id":"build-indexes","exit_code":0}

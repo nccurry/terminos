@@ -1,0 +1,3 @@
+{"type":"start","time_ms":0,"step_id":"inspect-metrics","command":"printf 'Rollout metrics\\n'\nfor i in $(seq -w 1 11); do printf '  metric-%s green threshold met\\n' \"$i\"; done\n","cwd":"examples/mock-cloud-rollout","shell":"bash"}
+{"type":"stdout","time_ms":2,"step_id":"inspect-metrics","data":"Rollout metrics\n  metric-01 green threshold met\n  metric-02 green threshold met\n  metric-03 green threshold met\n  metric-04 green threshold met\n  metric-05 green threshold met\n  metric-06 green threshold met\n  metric-07 green threshold met\n  metric-08 green threshold met\n  metric-09 green threshold met\n  metric-10 green threshold met\n  metric-11 green threshold met\n"}
+{"type":"exit","time_ms":2,"step_id":"inspect-metrics","exit_code":0}

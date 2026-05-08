@@ -1,0 +1,79 @@
+schema_version: "1.0"
+name: mock-cloud-rollout
+summary: A public mock demo showing a ten-step service rollout with multiline output.
+defaults:
+  shell: bash
+  cwd: .
+  prompt: "$ "
+  timeout: 30s
+  terminal:
+    cols: 120
+    rows: 32
+playback:
+  step_mode: enter
+  type_delay: 18ms
+  max_delay: 2s
+redactions:
+  - pattern: "/home/[^ ]+"
+    replacement: "~"
+steps:
+  - id: scan-repository
+    title: Scan repository state
+    command: |
+      printf 'Repository scan\n'
+      for i in $(seq -w 1 10); do printf '  module-%s clean\n' "$i"; done
+    expect_exit: 0
+  - id: run-unit-suite
+    title: Run unit suite
+    command: |
+      printf 'Unit test suite\n'
+      for i in $(seq -w 1 12); do printf '  package-%s ok 0.%ss\n' "$i" "$i"; done
+    expect_exit: 0
+  - id: check-contracts
+    title: Check API contracts
+    command: |
+      printf 'Contract checks\n'
+      for i in $(seq -w 1 11); do printf '  endpoint-%s compatible\n' "$i"; done
+    expect_exit: 0
+  - id: package-artifacts
+    title: Package artifacts
+    command: |
+      printf 'Artifact packaging\n'
+      for i in $(seq -w 1 9); do printf '  artifact-%s.tar.gz created\n' "$i"; done
+    expect_exit: 0
+  - id: deploy-staging
+    title: Deploy to staging
+    command: |
+      printf 'Staging deployment\n'
+      for i in $(seq -w 1 11); do printf '  service-%s rolled out\n' "$i"; done
+    expect_exit: 0
+  - id: smoke-staging
+    title: Smoke test staging
+    command: |
+      printf 'Staging smoke tests\n'
+      for i in $(seq -w 1 13); do printf '  probe-%s status=200 latency=%sms\n' "$i" "$((20 + 10#$i))"; done
+    expect_exit: 0
+  - id: update-flags
+    title: Update rollout flags
+    command: |
+      printf 'Feature flags\n'
+      for i in $(seq -w 1 8); do printf '  flag-%s enabled for cohort-%s\n' "$i" "$i"; done
+    expect_exit: 0
+  - id: inspect-metrics
+    title: Inspect rollout metrics
+    command: |
+      printf 'Rollout metrics\n'
+      for i in $(seq -w 1 11); do printf '  metric-%s green threshold met\n' "$i"; done
+    expect_exit: 0
+  - id: promote-production
+    title: Promote production
+    command: |
+      printf 'Production promotion\n'
+      for i in $(seq -w 1 9); do printf '  batch-%s complete\n' "$i"; done
+    expect_exit: 0
+  - id: summarize-release
+    title: Summarize release
+    command: |
+      printf 'Release summary\n'
+      for i in $(seq -w 1 7); do printf '  note-%s published\n' "$i"; done
+    expect_exit: 0

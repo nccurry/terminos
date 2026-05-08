@@ -1,0 +1,3 @@
+{"type":"start","time_ms":0,"step_id":"render-preview","command":"printf 'Preview render\\n'\nfor i in $(seq -w 1 10); do printf '  frame-%s rendered\\n' \"$i\"; done\n","cwd":"examples/mock-cli-workshop","shell":"bash"}
+{"type":"stdout","time_ms":2,"step_id":"render-preview","data":"Preview render\n  frame-01 rendered\n  frame-02 rendered\n  frame-03 rendered\n  frame-04 rendered\n  frame-05 rendered\n  frame-06 rendered\n  frame-07 rendered\n  frame-08 rendered\n  frame-09 rendered\n  frame-10 rendered\n"}
+{"type":"exit","time_ms":2,"step_id":"render-preview","exit_code":0}

@@ -1,0 +1,3 @@
+{"type":"start","time_ms":0,"step_id":"final-check","command":"printf 'Workshop summary\\n'\nfor i in $(seq -w 1 7); do printf '  result-%s documented\\n' \"$i\"; done\n","cwd":"examples/mock-cli-workshop","shell":"bash"}
+{"type":"stdout","time_ms":3,"step_id":"final-check","data":"Workshop summary\n  result-1 documented\n  result-2 documented\n  result-3 documented\n  result-4 documented\n  result-5 documented\n  result-6 documented\n  result-7 documented\n"}
+{"type":"exit","time_ms":3,"step_id":"final-check","exit_code":0}

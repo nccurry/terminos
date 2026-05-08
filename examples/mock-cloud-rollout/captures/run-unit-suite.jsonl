@@ -1,0 +1,3 @@
+{"type":"start","time_ms":0,"step_id":"run-unit-suite","command":"printf 'Unit test suite\\n'\nfor i in $(seq -w 1 12); do printf '  package-%s ok 0.%ss\\n' \"$i\" \"$i\"; done\n","cwd":"examples/mock-cloud-rollout","shell":"bash"}
+{"type":"stdout","time_ms":3,"step_id":"run-unit-suite","data":"Unit test suite\n  package-01 ok 0.01s\n  package-02 ok 0.02s\n  package-03 ok 0.03s\n  package-04 ok 0.04s\n  package-05 ok 0.05s\n  package-06 ok 0.06s\n  package-07 ok 0.07s\n  package-08 ok 0.08s\n  package-09 ok 0.09s\n  package-10 ok 0.10s\n  package-11 ok 0.11s\n  package-12 ok 0.12s\n"}
+{"type":"exit","time_ms":3,"step_id":"run-unit-suite","exit_code":0}
